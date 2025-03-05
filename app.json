@@ -1,14 +1,15 @@
 {
   "expo": {
     "name": "Smartchat",
-    "slug": "Smartchat",
+    "slug": "smartchat",
     "version": "1.0.0",
+    "scheme": "smartchat",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./Assets/logo.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./Assets/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -16,13 +17,17 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.careerx.bro",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./Assets/logo.png",
         "backgroundColor": "#ffffff"
       }
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
+    "extra": {
+      "eas": {
+        "projectId": "2f422f21-c145-4412-abd9-df275957504c"
+      }
+    },
+    "owner": "kapilverma29"
   }
 }

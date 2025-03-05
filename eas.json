@@ -1,0 +1,12 @@
+{
+  "cli": {
+    "version": ">= 15.0.13",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "production": {
+      "android": {}
+    }
+  },
+  "submit": {}
+}
