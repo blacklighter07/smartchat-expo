@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, StyleSheet, useColorScheme, Modal, Button, Linking, Image} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, StyleSheet, useColorScheme, Modal, Button, Linking, Image, Dimensions} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from './AuthContext';
 import Profile from '../Assets/profile.jpeg';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { LinearGradient } from 'expo-linear-gradient';
 
 const SignUpAndLogin = () => {
   const { signIn } = useAuth();
@@ -61,53 +62,90 @@ const SignUpAndLogin = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Image source={Profile} style={styles.profileImage} />
-      <TouchableOpacity style={styles.googleButton} onPress={handleLogin}>
-        <MaterialCommunityIcons name="google" size={30} color="#ff0400" style={styles.googleIcon} />
-        <Text style={styles.buttonText}>Sign in with Google</Text>
-      </TouchableOpacity>
-    </View>
+    <LinearGradient
+      colors={['#4c669f', '#3b5998', '#192f6a']}
+      style={styles.container}
+    >
+      <View style={styles.contentContainer}>
+        <View style={styles.logoContainer}>
+          <Image source={Profile} style={styles.profileImage} />
+          <Text style={styles.welcomeText}>welcome to Smartchat</Text>
+        </View>
+        
+        <TouchableOpacity 
+          style={styles.googleButton} 
+          onPress={handleLogin}
+          activeOpacity={0.8}
+        >
+          <MaterialCommunityIcons 
+            name="google" 
+            size={24} 
+            color="#ff0400" 
+            style={styles.googleIcon} 
+          />
+          <Text style={styles.buttonText}>Continue with Google</Text>
+        </TouchableOpacity>
+      </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#2cbf53",
+    paddingHorizontal: 20,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 50,
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     marginBottom: 20,
+    borderWidth: 3,
+    borderColor: '#ffffff50',
+  },
+  welcomeText: {
+    fontSize: 28,
+    fontWeight: "700",
+    color: '#fff',
+    marginBottom: 10,
+  },
+  subText: {
+    fontSize: 16,
+    color: '#ffffff90',
+    marginBottom: 30,
   },
   googleButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#000",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    backgroundColor: "#ffffff",
+    borderRadius: 15,
+    paddingVertical: 16,
+    paddingHorizontal: 30,
     shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 5,
+    width: Dimensions.get('window').width * 0.85,
+    justifyContent: 'center',
   },
   googleIcon: {
-    marginRight: 10,
+    marginRight: 12,
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: "500",
-    color: "#fff",
+    fontWeight: "600",
+    color: "#333",
   },
-  
 });
 
 export default SignUpAndLogin;

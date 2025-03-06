@@ -1,10 +1,9 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect, useRef} from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, PanResponder, Modal, TextInput, Button, ScrollView, useColorScheme, ActivityIndicator,Image, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, PanResponder, Modal, TextInput, Button, ScrollView, useColorScheme, ActivityIndicator, Image, FlatList, ImageBackground } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAuth} from './AuthContext';
 import axios from 'axios';
-
 
 const Home = ({navigation}) => {
   const [userData, setUserData] = useState({
@@ -69,14 +68,14 @@ const Home = ({navigation}) => {
   const isDarkMode = colorScheme === 'dark';
 
   const theme = {
-    backgroundColor: isDarkMode ? '#121212' : '#121212',
-    textColor: isDarkMode ? '#fd5901' : '#fd5901',
-    cardColor: isDarkMode ? '#1E1E1E' : '#1E1E1E',
-    accentColor: isDarkMode ? '#BB86FC' : '#BB86FC',
-    timeColor: isDarkMode ? '#fd5901' : '#fd5901',
-    dateColor: isDarkMode ? '#1DCED1' : '#1DCED1',
+    primary: '#FF4B2B',
+    secondary: '#FF416C',
+    background: isDarkMode ? '#0A0A0A' : '#F8F9FA',
+    surface: isDarkMode ? '#1A1A1A' : '#FFFFFF',
+    text: isDarkMode ? '#FFFFFF' : '#1A1A1A',
+    textSecondary: isDarkMode ? '#A0A0A0' : '#6C757D',
+    divider: isDarkMode ? '#2D2D2D' : '#F0F0F0',
   };
-
 
   const goToConversationPage = (chatbotId) => {
     console.log(chatbotId);
@@ -84,129 +83,166 @@ const Home = ({navigation}) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {chatbots.length === 0 ? (
-        <View style={styles.emptyState}>
-          <Text style={styles.emptyText}>loading</Text>
-          {isLoading ? (
-            <View
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <ActivityIndicator size="large" color="#ff8200" />
-            </View>
-          ) : null}
-        </View>
-      ) : (
-        chatbots.map(chatbot => (
-          <TouchableOpacity
-            key={chatbot._id}
-            style={styles.card}
-            onPress={() => goToConversationPage(chatbot._id)}>
-            <View style={styles.cardContent}>
-              <View style={styles.imageContainer}>
+    <View style={[styles.mainContainer, { backgroundColor: theme.background }]}>
+      <ImageBackground
+        source={require('../Assets/background.webp')}
+        style={styles.backgroundPattern}
+        resizeMode="repeat"
+      >
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={theme.primary} />
+            <Text style={[styles.loadingText, { color: theme.text }]}>
+              Loading chatbots...
+            </Text>
+          </View>
+        ) : chatbots.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Text style={[styles.emptyText, { color: theme.textSecondary }]}>
+              No chatbots available at the moment
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={chatbots}
+            keyExtractor={(item) => item._id}
+            contentContainerStyle={styles.container}
+            renderItem={({item: chatbot}) => (
+              <TouchableOpacity
+                style={[styles.card, { backgroundColor: theme.surface }]}
+                onPress={() => goToConversationPage(chatbot._id)}
+                activeOpacity={0.95}>
                 <Image
                   source={{uri: chatbot.botPicture}}
                   style={styles.chatbotImage}
                 />
-              </View>
+                <View style={[styles.cardOverlay, { backgroundColor: theme.surface }]}>
+                  <View style={styles.cardContent}>
+                    <View style={styles.headerRow}>
+                      <Text style={[styles.chatbotName, { color: theme.text }]} numberOfLines={1}>
+                        {chatbot.name}
+                      </Text>
+                      {chatbot.creatorId && (
+                        <Text style={[styles.creatorText, { color: theme.textSecondary }]}>
+                          @{chatbot.creatorId}
+                        </Text>
+                      )}
+                    </View>
+                    
+                    <Text style={[styles.description, { color: theme.text }]} numberOfLines={3}>
+                      {chatbot.description}
+                    </Text>
 
-              <View style={styles.textContent}>
-                <Text style={styles.chatbotName} numberOfLines={1}>
-                  {chatbot.name}
-                </Text>
-                {chatbot.creatorId && (
-                  <Text style={styles.creatorText}>@{chatbot.creatorId}</Text>
-                )}
-                <Text style={styles.description} numberOfLines={3}>
-                  {chatbot.description}
-                </Text>
-
-                <View style={styles.statsContainer}>
-                  <View style={styles.stat}>
-                    <Text>❤️</Text>
-                    <Text style={styles.statText}>{chatbot.likes}</Text>
-                  </View>
-                  <View style={styles.stat}>
-                    <Text>💬</Text>
-                    <Text style={styles.statText}>{chatbot.botQueries}</Text>
+                    <View style={[styles.statsContainer, { borderTopColor: theme.divider }]}>
+                      <View style={styles.stat}>
+                        <Text style={styles.emojiIcon}>❤️</Text>
+                        <Text style={[styles.statText, { color: theme.textSecondary }]}>
+                          {chatbot.likes}
+                        </Text>
+                      </View>
+                      <View style={styles.stat}>
+                        <Text style={styles.emojiIcon}>💬</Text>
+                        <Text style={[styles.statText, { color: theme.textSecondary }]}>
+                          {chatbot.botQueries}
+                        </Text>
+                      </View>
+                    </View>
                   </View>
                 </View>
-              </View>
-            </View>
-          </TouchableOpacity>
-        ))
-      )}
-    </ScrollView>
+              </TouchableOpacity>
+            )}
+          />
+        )}
+      </ImageBackground>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+  },
+  backgroundPattern: {
+    flex: 1,
+    width: '100%',
+  },
   container: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingBottom: 16,
+    padding: 12,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+    fontWeight: '500',
   },
   card: {
-    marginTop: 16,
-    width: "100%", // This ensures two cards fit in a row, you can adjust the percentage
-    backgroundColor: "#D1D5DB", // Gray color for card background
+    marginBottom: 12,
     borderRadius: 20,
-    padding: 12,
-    elevation: 5, // Android shadow
-    shadowColor: "#000", // iOS shadow
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 5,
-  },
-  cardContent: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
-  imageContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 20,
-    overflow: "hidden",
-    marginRight: 12,
+    overflow: 'hidden',
+    elevation: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    height: 160,
   },
   chatbotImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
+    width: 100,
+    height: '100%',
+    resizeMode: 'cover',
   },
-  textContent: {
+  cardOverlay: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 1,
+  },
+  cardContent: {
+    flex: 1,
+    justifyContent: 'space-between',
+    backgroundColor: 'rgba(122, 122, 122, 0.5)',
+  },
+  headerRow: {
+    flexDirection: 'column',  
+    gap: 1,
   },
   chatbotName: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#000",
+    fontWeight: "700",
   },
   creatorText: {
-    fontSize: 14,
-    color: "#4B5563", // Gray color for creator text
+    fontSize: 13,
+    fontWeight: '500',
   },
   description: {
-    fontSize: 14,
-    color: "#000",
-    marginBottom: 4,
-    overflow: 'hidden', // Ensures that the overflow is hidden
-    maxHeight: 48, // This limits the description height to 3 lines
+    fontSize: 13,
+    lineHeight: 17,
+    marginTop: 2,
+    flex: 1,
   },
   statsContainer: {
     flexDirection: "row",
-    justifyContent: "flex-start",
+    alignItems: "center",
+    paddingTop: 2,
+    borderTopWidth: 1,
   },
   stat: {
     flexDirection: "row",
     alignItems: "center",
     marginRight: 16,
   },
-  statText: {
-    marginLeft: 5,
+  emojiIcon: {
     fontSize: 14,
-    color: "#000",
+    marginRight: 4,
+  },
+  statText: {
+    fontSize: 13,
+    fontWeight: "600",
   },
   emptyState: {
     flex: 1,
@@ -215,11 +251,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   emptyText: {
-    color: "#6B7280", // Gray color for empty state
     fontSize: 16,
+    textAlign: 'center',
+    fontWeight: '500',
   },
 });
-
-
 
 export default Home;
