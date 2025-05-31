@@ -1,27 +1,14 @@
-# Keep React Native core classes
--keep class com.facebook.react.** { *; }
--keep class com.facebook.soloader.** { *; }
--keep class com.facebook.common.** { *; }
--keep class com.facebook.imagepipeline.** { *; }
--keep class com.facebook.hermes.** { *; }
--keep class com.facebook.jni.** { *; }
+# Add project specific ProGuard rules here.
+# By default, the flags in this file are appended to flags specified
+# in /usr/local/Cellar/android-sdk/24.3.3/tools/proguard/proguard-android.txt
+# You can edit the include path and order by changing the proguardFiles
+# directive in build.gradle.
+#
+# For more details, see
+#   http://developer.android.com/guide/developing/tools/proguard.html
 
-# Keep Expo-related classes
--keep class expo.modules.** { *; }
--keep class org.unimodules.** { *; }
-
-# Keep React Native Reanimated classes (you already had this)
+# react-native-reanimated
 -keep class com.swmansion.reanimated.** { *; }
-
-# Keep React Native TurboModules
 -keep class com.facebook.react.turbomodule.** { *; }
 
-# Keep Lifecycle components
--keep class androidx.lifecycle.** { *; }
--keep class androidx.lifecycle.DefaultLifecycleObserver { *; }
-
-# Keep Gson (if used)
--keep class com.google.gson.** { *; }
-
-# Keep annotation processors
--keepattributes *Annotation*
+# Add any project specific keep options here:
